@@ -1,0 +1,10 @@
+Please do the stuff said in the README.md to run the program.
+
+Everything is implemented and should be working.
+
+To run the test:
+1. cd to the directory of the test file
+2. run: python -m pytest test.py
+
+Please let me know if you have any questions at me email:
+amirali.malekghasemi@torontomu.ca

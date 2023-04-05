@@ -1,0 +1,160 @@
+{% extends "base.html" %} {% block title %}Search{% endblock %}
+
+{% block head %}
+<!-- Include Bootstrap CSS -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+  integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+4QL4fTjK9zDHhIa//LZzXu0jWIlQz2" crossorigin="anonymous">
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+  .watchlist{
+    width: 100%;
+  }
+
+  .buy-stock{
+    border: 3px solid black;
+    padding: 15px;
+    border-radius: 5%;
+  }
+
+
+  h1 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  form {
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  label {
+    font-weight: bold;
+    color: #555;
+  }
+
+  input[type="number"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin-bottom: 20px;
+  }
+
+  input[type="submit"] {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  input[type="submit"]:hover {
+    background-color: #0069d9;
+    border-color: #0062cc;
+  }
+</style>
+
+<h1>Search Results</h1>
+
+{% if stock %}
+<table class="table table-striped link-stocks">
+  <tr>
+    <th>Name</th>
+    <td>{{ stock.name }}</td>
+  </tr>
+  <tr>
+    <th>Price</th>
+    <td>${{ stock.price }}</td>
+  </tr>
+  <tr>
+    <th>Volume</th>
+    <td>{{ stock.volume }}</td>
+  </tr>
+  <tr>
+    <th>High</th>
+    <td>${{ stock.high }}</td>
+  </tr>
+  <tr>
+    <th>Low</th>
+    <td>${{ stock.low }}</td>
+  </tr>
+  <tr>
+    <th>Open</th>
+    <td>${{ stock.open }}</td>
+  </tr>
+
+</table>
+
+{% if stock.price_30_days %}
+<h2>Price History</h2>
+
+<table class="table table-striped link-stocks">
+  <tr>
+    <th>Day(s) Ago</th>
+    <th>Price</th>
+  </tr>
+
+  {% for day in stock.price_30_days %}
+  <tr>
+    <td>{{ loop.index }}</td>
+    <td>${{ day }}</td>
+  </tr>
+  {% endfor %}
+</table>
+
+
+{% if user.is_authenticated %}
+{% if watchlist %}
+  <form action="/search" method="POST" class="mt-2 mb-2">
+    <input type="hidden" name="form-type" value="remove_watchlist">
+    <input type="hidden" name="stock_name" value="{{ stock.name }}">
+    <button class="btn btn-primary watchlist" type="submit">Remove from Watchlist</button>
+  </form>
+{% else %}
+  <form action="/search" method="POST" class="mt-2 mb-2">
+    <input type="hidden" name="form-type" value="add_watchlist">
+    <input type="hidden" name="stock_name" value="{{ stock.name }}">
+    <button class="btn btn-primary watchlist" type="submit">Add to Watchlist</button>
+  </form>
+{% endif %}
+
+
+<div class="container mt-5 buy-stock">
+  <form method="POST">
+    <h1>Buy This Stock</h1>
+    <h2>{{ stock.name }}</h2>
+    <div class="form-group">
+      <input type="hidden" name="form-type" value="buy-stock">
+      <input type="hidden" name="stock" value="{{ stock.name }}">
+      <label for="quantity">Quantity:</label>
+      <input class="form-control" type="number" name="quantity" id="quantity">
+    </div>
+    <div class="form-group">
+      <input type="submit" value="Submit" class="btn btn-primary">
+    </div>
+  </form>
+</div>
+
+{% endif %}
+{% endif %}
+
+{% else %}
+<p>No stock found.</p>
+{% endif %}
+
+
+<div style="height: 80px"></div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+{% endblock %}

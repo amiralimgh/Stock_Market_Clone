@@ -1,0 +1,176 @@
+{% extends "base.html" %} {% block title %}Home{% endblock %} {% block content
+%}
+<style>
+  .topic {
+    font-weight: bold;
+    text-align: center;
+    font-family: Helvetica, sans-serif;
+    font-size: 68px;
+    color: black;
+  }
+
+  .stocks-list a {
+    color: black;
+    font-size: 22px;
+    text-align: center;
+    font-family: 'Murecho', sans-serif;
+    font-weight: 500;
+  }
+
+  .news-list a {
+    color: black;
+    font-size: 22px;
+    text-align: center;
+    font-family: 'Murecho', sans-serif;
+    font-weight: 500;
+  }
+
+  .background-stocks {
+    padding: 20px;
+    border: 3px solid black;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+
+  .news{
+    padding: 20px;
+    border: 3px solid black;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+
+  .shadow__btn {
+    padding: 10px 20px;
+    border: none;
+    font-size: 17px;
+    color: #fff;
+    border-radius: 7px;
+    letter-spacing: 4px;
+    font-weight: 700;
+    text-transform: uppercase;
+    transition: 0.5s;
+    transition-property: box-shadow;
+    background: rgb(0, 140, 255);
+    box-shadow: 0 0 25px rgb(0, 140, 255);
+    display: block;
+    margin: 0 auto;
+  }
+
+  .shadow__btn:hover {
+    box-shadow: 0 0 5px rgb(0, 140, 255),
+      0 0 25px rgb(0, 140, 255),
+      0 0 50px rgb(0, 140, 255),
+      0 0 100px rgb(0, 140, 255);
+  }
+</style>
+
+<div class="background-stocks">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Murecho:wght@500&family=Passions+Conflict&display=swap"
+    rel="stylesheet">
+
+
+  <h1 class="topic">STOCKS
+  </h1>
+  <script>
+    // Create a function to get the current date
+    function getCurrentDate() {
+      var today = new Date();
+      var dd = String(today.getDate()).padStart(2, '0');
+      const monthName = new Date().toLocaleString('default', { month: 'long' });
+      var yyyy = today.getFullYear();
+      today = monthName + ' ' + dd + ', ' + yyyy
+      return today;
+    }
+  </script>
+  <p style="font-size: 25px;text-align: center;font-family: Helvetica, sans-serif; font-weight:bold;color:black;">
+    <span class="link-stocks" id="currentDate"></span>
+  </p>
+
+  <script>
+    // Call the getCurrentDate function and set the text of the currentDate element
+    document.getElementById('currentDate').innerHTML = getCurrentDate();
+  </script>
+
+
+  <ul class="stocks-list">
+    {% for stock in stocks[:10] %}
+    <!-- <li>{{ stock.name }}: {{ stock.price }}</li> -->
+    <form method="POST" action="/search">
+      <input type="hidden" name="form-type" value="search">
+      <input type="hidden" name="stock_name" value="{{ stock.name }}">
+      <a class="link-stocks" href="#" onclick="this.parentNode.submit();">{{ stock.name }}: ${{ stock.price }}</a>
+    </form>
+    {% endfor %}
+    {% for stock in stocks[10:] %}
+    <!-- <li class="hiddens" style="visibility: hidden; height: 0;">{{ stock.name }}: {{ stock.price }}</li> -->
+    <form class="hiddens" style="visibility: hidden; height: 0;" method="POST" action="/search">
+      <input type="hidden" name="form-type" value="search">
+      <input type="hidden" name="stock_name" value="{{ stock.name }}">
+      <a class="link-stocks" href="#" onclick="this.parentNode.submit();">{{ stock.name }}: ${{ stock.price }}</a>
+    </form>
+    {% endfor %}
+  </ul>
+  <button id="view-more" onclick="toggleView()" class="shadow__btn">View More</button>
+
+
+  <script>
+    function toggleView() {
+      var hiddenItems = document.querySelectorAll('.hiddens');
+      var viewMoreButton = document.querySelector('#view-more');
+      for (var i = 0; i < hiddenItems.length; i++) {
+        if (hiddenItems[i].style.visibility === 'hidden') {
+          hiddenItems[i].style.visibility = 'visible';
+          hiddenItems[i].style.height = 'auto';
+          viewMoreButton.textContent = 'View Less';
+        } else {
+          hiddenItems[i].style.visibility = 'hidden';
+          hiddenItems[i].style.height = '0';
+          viewMoreButton.textContent = 'View More';
+        }
+      }
+    }
+  </script>
+</div>
+
+<div class="news">
+  <h1 class="topic">News</h1>
+  <ul class="news-list">
+    {% for item in news_items[:10] %}
+    <li>
+      <a class="link-stocks" target="_blank" href="{{ item.link }}">{{ item.title }}</a><br>
+      {{ item.date }}
+    </li>
+    {% endfor %}
+    {% for item in news_items[10:] %}
+    <li class="hiddens2" style="visibility: hidden; height: 0;">
+      <a class="link-stocks" target="_blank" href="{{ item.link }}">{{ item.title }}</a><br>
+      {{ item.date }}
+    </li>
+    {% endfor %}
+  </ul>
+  <button id="view-more-news" onclick="toggleViewNews()" class="shadow__btn">View More</button>
+  <script>
+    function toggleViewNews() {
+      var hiddenItems = document.querySelectorAll('.hiddens2');
+      var viewMoreButton = document.querySelector('#view-more-news');
+      for (var i = 0; i < hiddenItems.length; i++) {
+        if (hiddenItems[i].style.visibility === 'hidden') {
+          hiddenItems[i].style.visibility = 'visible';
+          hiddenItems[i].style.height = 'auto';
+          viewMoreButton.textContent = 'View Less';
+        } else {
+          hiddenItems[i].style.visibility = 'hidden';
+          hiddenItems[i].style.height = '0';
+          viewMoreButton.textContent = 'View More';
+        }
+      }
+    }
+  </script>
+</div>
+
+
+<div style="height: 80px;">
+
+{% endblock %}

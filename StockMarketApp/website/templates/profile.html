@@ -1,0 +1,180 @@
+{% extends "base.html" %} {% block title %}Profile{% endblock %} 
+{% block head %}
+<!-- Include Bootstrap CSS -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+  integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+4QL4fTjK9zDHhIa//LZzXu0jWIlQz2" crossorigin="anonymous">
+{% endblock %}
+{% block content %}
+<style>
+    .form {
+        margin: 0 auto;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        max-width: 320px;
+        padding: 20px;
+        border: black 3px solid;
+        border-radius: 20%;
+    }
+    
+    label {
+        display: block;
+        margin-bottom: 10px;
+    }
+    
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    select {
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+        color: #555;
+        display: block;
+        font-size: 14px;
+        height: 34px;
+        line-height: 1.42857143;
+        padding: 6px 12px;
+        transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+        width: 100%;
+    }
+    
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="password"]:focus,
+    select:focus {
+        border-color: #66afe9;
+        box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);
+        outline: none;
+    }
+
+    .submit {
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+
+    .user-stocks{
+        margin-bottom: 40px;
+    }
+
+
+</style>
+<div class="container mt-5">
+    <h2 class="text-center mb-5">Buy/Sell Stocks</h2>
+    <form method="POST" class="form">
+        <div class="form-group text-center">
+            <label for="stock">Stock:</label>
+            <select class="form-control" name="stock" id="stock">
+                <option value="">--Select a Stock--</option>
+                {% for stock in stocks %}
+                    <option value="{{ stock.name }}">{{ stock.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group text-center">
+            <label for="action">Action:</label>
+            <select class="form-control" name="action" id="action">
+                <option value="buy">Buy</option>
+                <option value="sell">Sell</option>
+            </select>
+        </div>
+        <div class="form-group text-center">
+            <label for="quantity">Quantity:</label>
+            <input class="form-control" type="number" name="quantity" id="quantity">
+        </div>
+        <div class="form-group text-center">
+            <button type="submit" class="btn btn-primary submit">Submit</button>
+        </div>
+    </form>
+</div>
+
+<h1>Your Stocks</h1>
+<table class="table table-striped user-stocks link-stocks">
+    <tr>
+        <th>Stock</th>
+        <th>Quantity</th>
+    </tr>
+
+    {% if user_stocks|length == 0 %}
+        <tr>
+            <td colspan="2">No stocks available!</td>
+        </tr>
+    {% else %}
+        {% for stock in user_stocks %}
+        <tr>
+            <td>{{ stock['name'] }}</td>
+            <td>{{ stock['quantity'] }}</td>
+        </tr>
+        {% endfor %}
+    {% endif %}
+
+</table>
+
+<h1>Watchlist</h1>
+<table class="table table-striped user-stocks link-stocks">
+    <tr>
+        <th>Stock</th>
+        <th>Price</th>
+    </tr>
+    {% if watchlist|length != 0 %}
+        {% for the_stock in watchlist %}
+            <tr>
+                <td>{{ the_stock.name }}</td>
+                <td>${{ the_stock.price }}</td>
+            </tr>
+        {% endfor %}
+    {% else %}
+        <tr>
+            <td colspan="2">
+                No stocks available!
+            </td>
+        </tr>
+    {% endif %}
+</table>
+
+
+<h1>Transaction History</h1>
+<table class="table table-striped user-stocks link-stocks">
+    <tr>
+        <th>Action</th>
+        <th>Stock</th>
+        <th>Quantity</th> 
+    </tr>
+    {% if transaction|length != 0 %}
+        {% for tran in transaction %}
+            <tr>
+                <td>{{ tran[0] }}</td>
+                <td>{{ tran[1] }}</td>
+                <td>{{ tran[2] }}</td>
+            </tr>
+        {% endfor %}
+    {% else %}
+        <tr>
+            <td colspan="3">
+                No transcation available!
+            </td>
+        </tr>
+    {% endif %}
+</table>
+
+
+
+<h1>
+    Budget
+</h1>
+<table class="table table-striped user-budget link-stocks">
+    <tr>
+        <th>Available:</th>
+        <th>${{ budget }}</th>
+    </tr>
+</table>
+
+
+
+<div style="height: 80px;">
+
+</div>
+
+{% endblock %}
